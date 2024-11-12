@@ -16,6 +16,8 @@ function refreshWeather(response) {
   windSpeedElement.innerHTML = `${response.data.wind.speed}km/h`;
   temperatureElement.innerHTML = Math.round(temperature);
   iconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon" />`;
+  
+  getforecast(response.data.city);
 }
 
 function formatDate(date) {
@@ -40,7 +42,7 @@ function formatDate(date) {
 }
 
 function searchCity(city) {
-  let apiKey = "b2a5adcct04b33178913oc335f405433";
+  let apiKey = "6cef3c6b12ac03oa7c3c47900da5te44";
   let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}`;
   axios.get(apiUrl).then(refreshWeather);
 }
@@ -51,23 +53,26 @@ function handleSearchSubmit(event) {
 
   searchCity(searchInput.value);
 }
-
-function displayForecast() {
-  let days = ["Tue", "Wed", "Thu", "Fri", "Sat"];
+function getForecast(city){
+ let apiKey = "6cef3c6b12ac03oa7c3c47900da5te44" 
+  let apiUrl =`https://api.shecodes.io/weather/v1/forecast?query=${city}key={apiKey}&units=metric`;
+  axios(apiURL).then(displayForecast);
+}
+function displayForecast(response) 
+console.log(response.data);{
   let forecastHtml = "";
-
-  days.forEach(function (day) {
+  response.data.daily.forEach(function(day){
     forecastHtml =
       forecastHtml +
       `
       <div class="weather-forecast-day">
         <div class="weather-forecast-date">${day}</div>
-        <div class="weather-forecast-icon">🌤️</div>
+        <div class="weather-forecast-icon"><image src="${day.condition.icon_url}"</div>
         <div class="weather-forecast-temperatures">
           <div class="weather-forecast-temperature">
-            <strong>15º</strong>
+            <strong>${Math.round(day.temperature.maximum)}º</strong>
           </div>
-          <div class="weather-forecast-temperature">9º</div>
+          <div class="weather-forecast-temperature">${Math.round(day.temperature.minumum)}º</div>
         </div>
       </div>
     `;
@@ -81,4 +86,5 @@ let searchFormElement = document.querySelector("#search-form");
 searchFormElement.addEventListener("submit", handleSearchSubmit);
 
 searchCity("Paris");
+getForecast("Paris");
 displayForecast();
